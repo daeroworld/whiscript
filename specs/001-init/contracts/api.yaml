@@ -1,0 +1,78 @@
+openapi: 3.0.0
+info:
+  title: Subtitle Editor API
+  version: 1.0.0
+
+paths:
+  /api/files:
+    post:
+      summary: Upload audio file
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        201:
+          description: File uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AudioFile'
+
+  /api/files/{fileId}/subtitles:
+    get:
+      summary: Get subtitles for file
+      parameters:
+        - name: fileId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: List of subtitles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subtitle'
+
+components:
+  schemas:
+    AudioFile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        filename:
+          type: string
+        duration:
+          type: integer
+        format:
+          type: string
+        status:
+          type: string
+          enum: [processing, ready, error]
+
+    Subtitle:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        text:
+          type: string
+        startTime:
+          type: integer
+        endTime:
+          type: integer
+        speaker:
+          type: string
